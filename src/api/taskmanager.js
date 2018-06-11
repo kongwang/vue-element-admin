@@ -2,54 +2,52 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/taskmanager/tasks',
+    url: '/tasks',
     method: 'get',
-    query
+    params: query
   })
 }
 
 export function fetchTask(taskId) {
   return request({
-    url: '/taskmanager/{taskId}/info',
-    method: 'get',
-    params: { taskId }
+    url: '/tasks/' + taskId + '/info',
+    method: 'get'
   })
 }
 
 export function stopTask(taskId) {
   return request({
-    url: '/taskmanager/{taskId}/stop',
-    method: 'put',
-    params: { taskId }
+    url: '/tasks/' + taskId + '/stop',
+    method: 'put'
   })
 }
 
 export function startTask(taskId) {
   return request({
-    url: '/taskmanager/{taskId}/start',
+    url: '/tasks/' + taskId + '/start',
     method: 'put'
   })
 }
 
 export function removeTask(taskId) {
   return request({
-    url: '/taskmanager/{taskId}/remove',
+    url: '/tasks/' + taskId + '/remove',
     method: 'put'
   })
 }
 
 export function createTask(taskInfo) {
   return request({
-    url: '/taskmanager/create',
+    url: '/tasks',
     method: 'post',
-    taskInfo
+    data: taskInfo
   })
 }
 
 export function updateTask(taskInfo) {
   return request({
-    url: '/taskmanager/{taskId}/modify',
-    method: 'post',
-    taskInfo
+    url: '/tasks/' + taskInfo.uuid,
+    method: 'put',
+    data: taskInfo
   })
 }

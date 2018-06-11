@@ -61,34 +61,34 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-if="scope.row.status!='RUNNING'" size="mini" type="success" @click="handleModifyStatus(scope.row,'RUNNING')">启动
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>
+          <el-button v-if="scope.row.status!='RUNNING'" size="mini" type="success" @click="handleModifyStatus(scope.row,'run')">启动
           </el-button>
-          <el-button v-if="scope.row.status!='STOPPED'" size="mini" @click="handleModifyStatus(scope.row,'STOPPED')">停止
+          <el-button v-if="scope.row.status!='STOPPED'" size="mini" @click="handleModifyStatus(scope.row,'stop')">停止
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog title="编辑任务" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:50px;'>
         <input type="hidden" v-model="temp.uuid" />
-        <el-form-item label="任务名称" prop="requiredText">
+        <el-form-item label="任务名称" prop="jobName">
           <el-input v-model="temp.jobName"></el-input>
         </el-form-item>
-        <el-form-item label="cron表达式" prop="requiredText">
+        <el-form-item label="cron表达式" prop="cronExpression">
           <el-input v-model="temp.cronExpression"></el-input>
         </el-form-item>
-        <el-form-item label="任务组" prop="requiredText">
+        <el-form-item label="任务组" prop="jobGroup">
           <el-input v-model="temp.jobGroup"></el-input>
         </el-form-item>
-        <el-form-item label="触发器名称" prop="requiredText">
+        <el-form-item label="触发器名称" prop="triggerName">
           <el-input v-model="temp.triggerName"></el-input>
         </el-form-item>
-        <el-form-item label="触发器组" prop="requiredText">
+        <el-form-item label="触发器组" prop="triggerGroup">
           <el-input v-model="temp.triggerGroup"></el-input>
         </el-form-item>
-        <el-form-item label="执行的类名" prop="requiredText">
+        <el-form-item label="执行的类名" prop="className">
           <el-input v-model="temp.className"></el-input>
         </el-form-item>        
       </el-form>
@@ -129,12 +129,12 @@ export default {
         jobName: undefined,
         jobGroup: undefined,
         className: undefined,
-        status: 0
+        status: undefined
       },
       statusOptions: [
-        { label: "ALL", key: 0 },
-        { label: "RUNNING", key: 2 },
-        { label: "STOPPED", key: 1 }
+        { label: "ALL", key: undefined },
+        { label: "RUNNING", key: "RUNNING" },
+        { label: "STOPPED", key: "STOPPED" }
       ],
       temp: {
         uuid: undefined,
@@ -152,8 +152,35 @@ export default {
         create: "Create"
       },
       rules: {
-        requiredText: [
-          { required: true, message: "must not be empty", trigger: "blur" }
+        jobName: [
+          { required: true, message: "jobName is required", trigger: "blur" }
+        ],
+        jobGroup: [
+          { required: true, message: "jobGroup is required", trigger: "blur" }
+        ],
+        triggerName: [
+          {
+            required: true,
+            message: "triggerName is required",
+            trigger: "blur"
+          }
+        ],
+        triggerGroup: [
+          {
+            required: true,
+            message: "triggerGroup is required",
+            trigger: "blur"
+          }
+        ],
+        className: [
+          { required: true, message: "className is required", trigger: "blur" }
+        ],
+        cronExpression: [
+          {
+            required: true,
+            message: "cronExpression is required",
+            trigger: "blur"
+          }
         ]
       }
     };
@@ -185,7 +212,7 @@ export default {
     handleModifyStatus(row, status) {
       if (status === "run") {
         startTask(row.uuid).then(() => {
-          row.status = status;
+          row.status = "RUNNING";
           this.$message({
             message: "操作成功",
             type: "success"
@@ -193,7 +220,7 @@ export default {
         });
       } else {
         stopTask(row.uuid).then(() => {
-          row.status = status;
+          row.status = "STOPPED";
           this.$message({
             message: "操作成功",
             type: "success"
@@ -236,11 +263,13 @@ export default {
       });
     },
     handleUpdate(row) {
-      this.temp = this.getTask(row.uuid);
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+      fetchTask(row.uuid).then(response => {
+        this.temp = response.data;
+        this.dialogStatus = "update";
+        this.dialogFormVisible = true;
+        this.$nextTick(() => {
+          this.$refs["dataForm"].clearValidate();
+        });
       });
     },
     updateData() {
@@ -248,6 +277,7 @@ export default {
         if (valid) {
           updateTask(this.temp).then(() => {
             this.dialogFormVisible = false;
+            this.getList();
             this.$notify({
               title: "成功",
               message: "更新成功",
@@ -266,11 +296,6 @@ export default {
           type: "success",
           duration: 2000
         });
-      });
-    },
-    getTask(taskId) {
-      fetchTask(taskId).then(response => {
-        return response.data;
       });
     }
   }
