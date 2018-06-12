@@ -66,6 +66,8 @@
           </el-button>
           <el-button v-if="scope.row.status!='STOPPED'" size="mini" @click="handleModifyStatus(scope.row,'stop')">停止
           </el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{$t('table.delete')}}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -252,6 +254,7 @@ export default {
         if (valid) {
           createTask(this.temp).then(() => {
             this.dialogFormVisible = false;
+            this.getList();
             this.$notify({
               title: "成功",
               message: "创建成功",
@@ -289,12 +292,19 @@ export default {
       });
     },
     handleDelete(row) {
-      removeTask(row.uuid).then(() => {
-        this.$notify({
-          title: "成功",
-          message: "删除成功",
-          type: "success",
-          duration: 2000
+      this.$confirm("確認刪除？", "提示", {
+        confirmButtonText: "確定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        removeTask(row.uuid).then(() => {
+          this.getList();
+          this.$notify({
+            title: "成功",
+            message: "删除成功",
+            type: "success",
+            duration: 2000
+          });
         });
       });
     }
