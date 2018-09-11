@@ -158,8 +158,8 @@ module.exports = {
       }
     }],
     'padded-blocks': [2, 'never'],
-    'space-before-blocks': [2, 'always'],
-    'space-before-function-paren': [2, 'never'],
+    'space-before-blocks': [1, 'always'],
+    'space-before-function-paren': [1, 'never'],
     'space-in-parens': [2, 'never'],
     'space-infix-ops': 2,
     'space-unary-ops': [2, {

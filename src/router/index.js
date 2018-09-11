@@ -91,6 +91,22 @@ export const asyncRouterMap = [{
     }]
   },
   {
+    path: '/querybuilder',
+    component: Layout,
+    redirect: '/querybuilder/index',
+    children: [{
+      path: 'index',
+      component: () =>
+        import ('@/views/querybuilder/index'),
+      name: 'qb',
+      meta: {
+        title: 'QueryBuilder',
+        icon: 'table',
+        noCache: true
+      }
+    }]
+  },
+  {
     path: '*',
     redirect: '/404',
     hidden: true
