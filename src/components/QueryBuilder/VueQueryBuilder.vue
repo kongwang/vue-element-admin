@@ -1,5 +1,5 @@
 <template>
-  <div class="query-builder form-inline">
+  <div class="query-builder form-inline" style="padding: 0 50px">
     <query-builder-group
       :index="0"
       :query.sync="query"
@@ -7,7 +7,6 @@
       :rules="mergedRules"
       :maxDepth="maxDepth"
       :depth="depth"
-      :labels="mergedLabels"
       type="query-builder-group"
       ></query-builder-group>
   </div>
@@ -16,16 +15,6 @@
 <script>
 import QueryBuilderGroup from "./QueryBuilderGroup.vue";
 import deepClone from "@/utils/deepClone.js";
-
-var defaultLabels = {
-  matchTypeAll: "AND",
-  matchTypeAny: "OR",
-  addRule: "Add Rule",
-  removeRule: "&times;",
-  addGroup: "Add Group",
-  removeGroup: "&times;",
-  textInputPlaceholder: "value"
-};
 
 export default {
   name: "vue-query-builder",
@@ -36,12 +25,6 @@ export default {
 
   props: {
     rules: Array,
-    labels: {
-      type: Object,
-      default() {
-        return defaultLabels;
-      }
-    },
     maxDepth: {
       type: Number,
       default: 3,
@@ -95,13 +78,13 @@ export default {
           id: "datetime-field"
         },
         radio: {
-          operators: [],
+          operators: ["=", "<>"],
           choices: [],
           inputType: "radio",
           id: "radio-field"
         },
         checkbox: {
-          operators: [],
+          operators: ["=", "<>"],
           choices: [],
           inputType: "checkbox",
           id: "checkbox-field"
@@ -123,15 +106,24 @@ export default {
   },
 
   computed: {
-    mergedLabels() {
-      return Object.assign({}, defaultLabels, this.labels);
-    },
-
     mergedRules() {
       var mergedRules = [];
       var vm = this;
 
       vm.rules.forEach(function(rule) {
+        if (rule.subRules !== undefined) {
+          var mergedSubRules = [];
+          rule.subRules.forEach(function(subRule) {
+            if (typeof vm.ruleTypes[subRule.type] !== "undefined") {
+              mergedSubRules.push(
+                Object.assign({}, vm.ruleTypes[subRule.type], subRule)
+              );
+            } else {
+              mergedSubRules.push(subRule);
+            }
+          });
+          rule.subRules = mergedSubRules;
+        }
         if (typeof vm.ruleTypes[rule.type] !== "undefined") {
           mergedRules.push(Object.assign({}, vm.ruleTypes[rule.type], rule));
         } else {
@@ -162,50 +154,103 @@ export default {
 </script>
 
 <style>
-#com_rules :before,
-#com_rules :after {
-  box-sizing: border-box;
-}
-div.c-rules-group-container {
-  padding: 10px;
-  padding-bottom: 6px;
-  border: 1px solid #dcc896;
-  background: rgba(250, 240, 210, 0.5);
-}
-div.c-rules-group-container,
-div.c-rule-container {
+/*!
+ * jQuery QueryBuilder 2.5.2
+ * Copyright 2014-2018 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+ * Licensed under MIT (https://opensource.org/licenses/MIT)
+ */
+.query-builder .rule-container,
+.query-builder .rule-placeholder,
+.query-builder .rules-group-container {
   position: relative;
   margin: 4px 0;
   border-radius: 5px;
   padding: 5px;
   border: 1px solid #eee;
-}
-div.c-rule-container {
   background: rgba(255, 255, 255, 0.9);
 }
-div.c-rules-group-header {
+
+.query-builder .drag-handle,
+.query-builder .error-container,
+.query-builder .rule-container .rule-filter-container,
+.query-builder .rule-container .rule-operator-container,
+.query-builder .rule-container .rule-value-container {
+  display: inline-block;
+  margin: 0 5px 0 0;
+  vertical-align: middle;
+}
+
+.query-builder .rules-group-container {
+  padding: 10px;
+  padding-bottom: 6px;
+  border: 1px solid #dcc896;
+  background: rgba(250, 240, 210, 0.5);
+}
+
+.query-builder .rules-group-header {
   margin-bottom: 10px;
 }
-div.c-rules-group-header .el-button--mini,
-div.c-rule-header .el-button--mini {
-  padding: 3px;
+
+.query-builder .rules-group-header .group-conditions .btn.readonly:not(.active),
+.query-builder .rules-group-header .group-conditions input[name$="_cond"] {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
 }
-div.c-pull-right {
-  float: right !important;
+
+.query-builder .rules-group-header .group-conditions .btn.readonly {
+  border-radius: 3px;
 }
-div.c-rules-list {
+
+.query-builder .rules-list {
   list-style: none;
   padding: 0 0 0 15px;
   margin: 0;
 }
-div.c-btn-group,
-div.c-btn-group-vertical {
-  position: relative;
-  display: inline-block;
-  vertical-align: middle;
+
+.query-builder .rule-value-container {
+  border-left: 1px solid #ddd;
+  padding-left: 5px;
 }
-.c-rules-group-body .c-rules-list > ::after,
-.c-rules-group-body .c-rules-list > ::before {
+
+.query-builder .rule-value-container label {
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+.query-builder .rule-value-container label.block {
+  display: block;
+}
+
+.query-builder .rule-value-container input[type="number"],
+.query-builder .rule-value-container input[type="text"],
+.query-builder .rule-value-container select {
+  padding: 1px;
+}
+
+.query-builder .error-container {
+  display: none;
+  cursor: help;
+  color: red;
+}
+
+.query-builder .has-error {
+  background-color: #fdd;
+  border-color: #f99;
+}
+
+.query-builder .has-error .error-container {
+  display: inline-block !important;
+}
+
+.query-builder .rules-list > ::after,
+.query-builder .rules-list > ::before {
   content: "";
   position: absolute;
   left: -10px;
@@ -214,35 +259,88 @@ div.c-btn-group-vertical {
   border-color: #ccc;
   border-style: solid;
 }
-.c-rules-group-body .c-rules-list > :first-child::before {
-  top: -12px;
-  height: calc(50% + 14px);
-}
-.c-rules-group-body .c-rules-list > ::before {
+
+.query-builder .rules-list > ::before {
   top: -4px;
   border-width: 0 0 2px 2px;
 }
-.c-rules-group-body .c-rules-list > :last-child::before {
-  border-radius: 0 0 0 4px;
-}
-.c-rules-group-body .c-rules-list > ::after {
+
+.query-builder .rules-list > ::after {
   top: 50%;
   border-width: 0 0 0 2px;
 }
-.c-rules-group-body .c-rules-list > :last-child::after {
+
+.query-builder .rules-list > :first-child::before {
+  top: -12px;
+  height: calc(50% + 14px);
+}
+
+.query-builder .rules-list > :last-child::before {
+  border-radius: 0 0 0 4px;
+}
+
+.query-builder .rules-list > :last-child::after {
   display: none;
 }
-.c-rules-group-body .drag-handle,
-.c-rules-group-body .error-container,
-.c-rules-group-body .c-rule-container .c-rule-filter-container,
-.c-rules-group-body .c-rule-container .c-rule-operator-container,
-.c-rules-group-body .c-rule-container .c-rule-value-container {
-  display: inline-block;
-  margin: 0 5px 0 0;
-  vertical-align: middle;
+
+.query-builder.bt-checkbox-glyphicons
+  .checkbox
+  input[type="checkbox"]:checked
+  + label::after {
+  font-family: "Glyphicons Halflings";
+  content: "\e013";
 }
-.c-rules-group-body .c-rule-container .c-rule-value-container {
-  border-left: 1px solid #ddd;
-  padding-left: 5px;
+
+.query-builder.bt-checkbox-glyphicons .checkbox label::after {
+  padding-left: 4px;
+  padding-top: 2px;
+  font-size: 9px;
+}
+
+.query-builder .error-container + .tooltip .tooltip-inner {
+  color: #f99 !important;
+}
+
+.query-builder p.filter-description {
+  margin: 5px 0 0 0;
+  background: #d9edf7;
+  border: 1px solid #bce8f1;
+  color: #31708f;
+  border-radius: 5px;
+  padding: 2.5px 5px;
+  font-size: 0.8em;
+}
+
+.query-builder .rules-group-header [data-invert] {
+  margin-left: 5px;
+}
+
+.query-builder .drag-handle {
+  cursor: move;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+.query-builder .dragging {
+  position: fixed;
+  opacity: 0.5;
+  z-index: 100;
+}
+
+.query-builder .dragging::after,
+.query-builder .dragging::before {
+  display: none;
+}
+
+.query-builder .rule-placeholder {
+  border: 1px dashed #bbb;
+  opacity: 0.7;
+}
+.pull-right {
+  float: right !important;
+}
+.has-error{
+  background-color: #fdd;
+  border-color: #f99;
 }
 </style>

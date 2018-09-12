@@ -1,35 +1,37 @@
 <template>
-  <div class="c-rules-group-container" style="margin:0 50px;">
-      <div class="c-rules-group-header">
-          <div class="c-pull-right c-btn-group">
+  <div class="rules-group-container"> 
+      <div class="rules-group-header">
+          <div class="btn-group pull-right group-actions"> 
               <el-button-group>
                   <el-button size="mini" type="success" icon="el-icon-plus" @click="addRule">Add Rule</el-button>
-                  <el-button size="mini" type="success" icon="el-icon-circle-plus-outline" v-if="this.depth < this.maxDepth" @click="addGroup">addGroup</el-button>
+                  <el-button size="mini" type="success" icon="el-icon-circle-plus-outline" v-if="this.depth < this.maxDepth" @click="addGroup">Add Group</el-button>
                   <el-button v-if="this.depth > 1" @click="remove" size="mini" type="danger" icon="el-icon-close">Delete</el-button>
               </el-button-group>
           </div>
-          <div class="c-group-conditions c-btn-group">
+          <div class="btn-group group-conditions">
             <el-radio-group v-model="query.logicalOperator" size="mini">
-              <el-radio-button label="AND">AND</el-radio-button>
-              <el-radio-button label="OR">OR</el-radio-button>
+              <el-radio-button label="AND" :disabled="!hasMultipleRule">AND</el-radio-button>
+              <el-radio-button label="OR" :disabled="!hasMultipleRule">OR</el-radio-button>
             </el-radio-group>
           </div>
+          
       </div>
-      <div class="c-rules-group-body">
-        <component
-          v-for="(child, index) in query.children"
-          :key="index"
-          :is="child.type"
-          :type="child.type"
-          :query.sync="child.query"
-          :ruleTypes="ruleTypes"
-          :rules="rules"
-          :index="index"
-          :maxDepth="maxDepth"
-          :depth="depth + 1"
-          :labels="labels"
-          v-on:child-deletion-requested="removeChild">
-        </component>
+      <div class="rules-group-body"> 
+        <div class="rules-list">
+          <component
+            v-for="(child, index) in query.children"
+            :key="index"
+            :is="child.type"
+            :type="child.type"
+            :query.sync="child.query"
+            :ruleTypes="ruleTypes"
+            :rules="rules"
+            :index="index"
+            :maxDepth="maxDepth"
+            :depth="depth + 1"
+            v-on:child-deletion-requested="removeChild">
+          </component>
+        </div>
       </div>
   </div>
 </template>
@@ -52,8 +54,7 @@ export default {
     "rules",
     "index",
     "maxDepth",
-    "depth",
-    "labels"
+    "depth"
   ],
 
   methods: {
@@ -78,7 +79,16 @@ export default {
           type: "query-builder-group",
           query: {
             logicalOperator: "AND",
-            children: []
+            children: [
+              {
+                type: "query-builder-rule",
+                query: {
+                  rule: this.rules[0].id,
+                  selectedOperator: this.rules[0].operators[0],
+                  value: null
+                }
+              }
+            ]
           }
         });
         this.$emit("update:query", updated_query);
@@ -93,20 +103,15 @@ export default {
       const updated_query = deepClone(this.query);
       updated_query.children.splice(index, 1);
       this.$emit("update:query", updated_query);
+    },
+
+    hasMultipleRule() {
+      return this.query.children.length > 1;
     }
   },
 
   data() {
     return {};
-  },
-
-  computed: {
-    classObject() {
-      var classObject = {};
-
-      classObject["depth-" + this.depth.toString()] = true;
-      return classObject;
-    }
   }
 };
 </script>
