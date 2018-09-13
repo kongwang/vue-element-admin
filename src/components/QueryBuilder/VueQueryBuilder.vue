@@ -45,58 +45,98 @@ export default {
       ruleTypes: {
         text: {
           operators: [
-            "equals",
-            "does not equal",
-            "contains",
-            "does not contain",
-            "is empty",
-            "is not empty",
-            "begins with",
-            "ends with"
+            { label: "等於", value: "EQUALS" },
+            { label: "不等於", value: "NOTEQUALS" },
+            { label: "包含於", value: "IN" },
+            { label: "不包含於", value: "NOTIN" }
           ],
           inputType: "text",
           id: "text-field"
         },
         numeric: {
-          operators: ["=", "<>", "<", "<=", ">", ">="],
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "大於", value: "GREATTHAN" },
+            { label: "小於", value: "LESSTHAN" },
+            { label: "大於等於", value: "GREATTHANEQUALS" },
+            { label: "小於等於", value: "LESSTHANEQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ],
           inputType: "number",
           id: "number-field"
         },
         time: {
-          operators: ["=", "<>", "<", "<=", ">", ">="],
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "大於", value: "GREATTHAN" },
+            { label: "小於", value: "LESSTHAN" },
+            { label: "大於等於", value: "GREATTHANEQUALS" },
+            { label: "小於等於", value: "LESSTHANEQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ],
           inputType: "time",
           id: "time-field"
         },
         date: {
-          operators: ["=", "<>", "<", "<=", ">", ">="],
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "大於", value: "GREATTHAN" },
+            { label: "小於", value: "LESSTHAN" },
+            { label: "大於等於", value: "GREATTHANEQUALS" },
+            { label: "小於等於", value: "LESSTHANEQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ],
           inputType: "date",
           id: "date-field"
         },
         datetime: {
-          operators: ["=", "<>", "<", "<=", ">", ">="],
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "大於", value: "GREATTHAN" },
+            { label: "小於", value: "LESSTHAN" },
+            { label: "大於等於", value: "GREATTHANEQUALS" },
+            { label: "小於等於", value: "LESSTHANEQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ],
           inputType: "datetime",
           id: "datetime-field"
         },
         radio: {
-          operators: ["=", "<>"],
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ],
           choices: [],
           inputType: "radio",
           id: "radio-field"
         },
         checkbox: {
-          operators: ["=", "<>"],
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "不等於", value: "NOTEQUALS" },
+            { label: "包含於", value: "IN" },
+            { label: "不包含於", value: "NOTIN" }
+          ],
           choices: [],
           inputType: "checkbox",
           id: "checkbox-field"
         },
         select: {
-          operators: ["=", "<>"],
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ],
           choices: [],
           inputType: "select",
           id: "select-field"
         },
         "multi-select": {
-          operators: ["="],
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "不等於", value: "NOTEQUALS" },
+            { label: "包含於", value: "IN" },
+            { label: "不包含於", value: "NOTIN" }
+          ],
           choices: [],
           inputType: "select",
           id: "multi-select-field"
@@ -333,7 +373,7 @@ export default {
 .pull-right {
   float: right !important;
 }
-.has-error{
+.has-error {
   background-color: #fdd;
   border-color: #f99;
 }

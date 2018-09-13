@@ -17,7 +17,7 @@
         </div>
         <div class="rule-operator-container">
             <el-select v-model="query.selectedOperator" size="small">
-                <el-option v-for="operator in selectedRuleObj.operators" :value="operator" :key="operator" :label="operator">
+                <el-option v-for="operator in selectedRuleObj.operators" :value="operator.value" :key="operator.value" :label="operator.label">
                 </el-option>
             </el-select>
         </div>
@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       selectedRuleObj: this.rules[0],
-      selectedRule: this.rules[0].id,
+      selectedRule: this.query.rule || this.rules[0].id,
       selectedSubRule: null,
       subRules: []
     };
@@ -118,12 +118,24 @@ export default {
       if (this.selectedRuleObj.type === "select") {
         updated_query.value = this.selectedRuleObj.choices[0].value;
       }
-      if (this.selectedRuleObj.type === "time" || this.selectedRuleObj.type === "date" || this.selectedRuleObj.type === "datetime") {
+      if (
+        this.selectedRuleObj.type === "time" ||
+        this.selectedRuleObj.type === "date" ||
+        this.selectedRuleObj.type === "datetime"
+      ) {
         updated_query.value = new Date();
       }
 
       this.$emit("update:query", updated_query);
     }
+
+    var _this = this;
+    this.rules.forEach(function(rule) {
+      if (rule.id === _this.selectedRule) {
+        _this.selectedRuleObj = rule;
+        return false;
+      }
+    });
   }
 };
 </script>

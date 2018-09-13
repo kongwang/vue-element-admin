@@ -26,7 +26,15 @@ export default {
         {
           type: "datetime",
           id: "vegetable",
-          label: "Vegetable"
+          label: "Vegetable",
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "早於", value: "GREATTHAN" },
+            { label: "晚於", value: "LESSTHAN" },
+            { label: "早於等於", value: "GREATTHANEQUALS" },
+            { label: "晚於等於", value: "LESSTHANEQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ]
         },
         {
           type: "checkbox",
@@ -65,9 +73,17 @@ export default {
           {
             type: "query-builder-rule",
             query: {
-              rule: "vegetable",
-              selectedOperator: "=",
-              value: new Date(1473737544 * 1000)
+              rule: "radio",
+              selectedOperator: "EQUALS",
+              value: "Apple"
+            }
+          },
+          {
+            type: "query-builder-rule",
+            query: {
+              rule: "fruit",
+              selectedOperator: "NOTIN",
+              value: ["Apple", "Banana"]
             }
           }
         ]
