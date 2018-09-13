@@ -22,10 +22,9 @@
             </el-select>
         </div>
         <div class="rule-value-container">
-          <el-input v-if="selectedRuleObj.inputType === 'text'" type="text" v-model="query.value"/>
-          <el-input v-if="selectedRuleObj.inputType === 'number'" type="number" v-model="query.value" />
-          <el-time-picker v-if="selectedRuleObj.inputType === 'time'" type="time" v-model="query.value" />
-          <el-date-picker v-if="selectedRuleObj.inputType === 'date' || selectedRuleObj.inputType === 'datetime'" :type="selectedRuleObj.inputType" v-model="query.value" />
+          <el-input v-if="selectedRuleObj.inputType === 'text'" type="text" v-model="query.value" clearable/>
+          <el-input-number v-if="selectedRuleObj.inputType === 'number'" v-model="query.value"></el-input-number>
+          <el-date-picker v-if="selectedRuleObj.inputType === 'date' || selectedRuleObj.inputType === 'datetime'" value-format="timestamp" :editable="false" :type="selectedRuleObj.inputType" v-model="query.value" />
           <el-checkbox-group v-model="query.value" v-if="selectedRuleObj.inputType === 'checkbox'">
             <el-checkbox :label="choice" v-for="choice in selectedRuleObj.choices" :key="choice" :value="choice"></el-checkbox>
           </el-checkbox-group>
@@ -77,16 +76,11 @@ export default {
           } else {
             _this.selectedRuleObj = value;
             _this.query.rule = _this.selectedRule;
-            if (_this.selectedRuleObj.inputType === "checkbox") {
-              _this.query.value = [];
-            }
-            if (_this.selectedRuleObj.type === "select") {
-              _this.query.value = _this.selectedRuleObj.choices[0].value;
-            }
-            _this.$emit("update:query", deepClone(_this.query));
+            _this.initValue();
           }
         }
       });
+      this.query.selectedOperator = this.selectedRuleObj.operators[0].value;
     },
     subRuleChange: function() {
       const _this = this;
@@ -94,48 +88,71 @@ export default {
       this.subRules.forEach(function(value) {
         if (value.id === _this.selectedSubRule) {
           _this.selectedRuleObj = value;
-          _this.query.rule = _this.selectedSubRule;
-          if (_this.selectedRuleObj.inputType === "checkbox") {
-            _this.query.value = [];
-          }
-          if (_this.selectedRuleObj.type === "select") {
-            _this.query.value = _this.selectedRuleObj.choices[0].value;
-          }
-          _this.$emit("update:query", deepClone(_this.query));
+          _this.query.selectedOperator =
+            _this.selectedRuleObj.operators[0].value;
+          _this.query.rule = _this.selectedRule + "-" + _this.selectedSubRule;
+          _this.initValue();
         }
       });
+    },
+    initValue() {
+      if (this.query.value === null) {
+        const updated_query = deepClone(this.query);
+        if (this.selectedRuleObj.inputType === "checkbox") {
+          updated_query.value = [];
+        }
+        if (
+          this.selectedRuleObj.inputType === "select" ||
+          this.selectedRuleObj.inputType === "radio"
+        ) {
+          updated_query.value = this.selectedRuleObj.choices[0];
+        }
+        if (
+          this.selectedRuleObj.inputType === "time" ||
+          this.selectedRuleObj.inputType === "date" ||
+          this.selectedRuleObj.inputType === "datetime"
+        ) {
+          updated_query.value = Math.round(new Date());
+        }
+        this.$emit("update:query", deepClone(updated_query));
+      }
     }
   },
 
   mounted() {
-    const updated_query = deepClone(this.query);
-
     // Set a default value for these types if one isn't provided already
-    if (this.query.value === null) {
-      if (this.selectedRuleObj.inputType === "checkbox") {
-        updated_query.value = [];
-      }
-      if (this.selectedRuleObj.type === "select") {
-        updated_query.value = this.selectedRuleObj.choices[0].value;
-      }
-      if (
-        this.selectedRuleObj.type === "time" ||
-        this.selectedRuleObj.type === "date" ||
-        this.selectedRuleObj.type === "datetime"
-      ) {
-        updated_query.value = new Date();
-      }
-
-      this.$emit("update:query", updated_query);
-    }
+    this.initValue();
 
     var _this = this;
-    this.rules.forEach(function(rule) {
-      if (rule.id === _this.selectedRule) {
-        _this.selectedRuleObj = rule;
-        return false;
-      }
-    });
+    var selectedRuleCopy = _this.selectedRule;
+    var splitIndex = selectedRuleCopy.indexOf("-");
+    if (splitIndex > -1) {
+      _this.selectedRule = selectedRuleCopy.substring(0, splitIndex);
+      _this.selectedSubRule = selectedRuleCopy.substring(splitIndex + 1);
+      this.rules.forEach(function(rule) {
+        if (rule.id === _this.selectedRule) {
+          var isBreak = false;
+          _this.subRules = rule.subRules;
+          rule.subRules.forEach(function(subRule) {
+            if (subRule.id === _this.selectedSubRule) {
+              _this.selectedRuleObj = subRule;
+              isBreak = true;
+              return false;
+            }
+          });
+          if (isBreak) {
+            return false;
+          }
+        }
+      });
+    } else {
+      this.rules.forEach(function(rule) {
+        if (rule.id === _this.selectedRule) {
+          _this.selectedRuleObj = rule;
+          return false;
+        }
+      });
+    }
   }
 };
 </script>

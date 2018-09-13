@@ -56,7 +56,7 @@ export default {
         type: "query-builder-rule",
         query: {
           rule: this.rules[0].id,
-          selectedOperator: this.rules[0].operators[0],
+          selectedOperator: this.rules[0].operators[0].value,
           value: null
         }
       };
@@ -76,7 +76,7 @@ export default {
                 type: "query-builder-rule",
                 query: {
                   rule: this.rules[0].id,
-                  selectedOperator: this.rules[0].operators[0],
+                  selectedOperator: this.rules[0].operators[0].value,
                   value: null
                 }
               }

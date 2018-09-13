@@ -65,18 +65,6 @@ export default {
           inputType: "number",
           id: "number-field"
         },
-        time: {
-          operators: [
-            { label: "等於", value: "EQUALS" },
-            { label: "大於", value: "GREATTHAN" },
-            { label: "小於", value: "LESSTHAN" },
-            { label: "大於等於", value: "GREATTHANEQUALS" },
-            { label: "小於等於", value: "LESSTHANEQUALS" },
-            { label: "不等於", value: "NOTEQUALS" }
-          ],
-          inputType: "time",
-          id: "time-field"
-        },
         date: {
           operators: [
             { label: "等於", value: "EQUALS" },

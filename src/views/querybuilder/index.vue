@@ -24,6 +24,24 @@ export default {
     return {
       rules: [
         {
+          type: "text",
+          id: "text",
+          label: "text"
+        },
+        {
+          type: "date",
+          id: "date",
+          label: "date",
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "早於", value: "GREATTHAN" },
+            { label: "晚於", value: "LESSTHAN" },
+            { label: "早於等於", value: "GREATTHANEQUALS" },
+            { label: "晚於等於", value: "LESSTHANEQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ]
+        },
+        {
           type: "datetime",
           id: "vegetable",
           label: "Vegetable",
@@ -38,9 +56,14 @@ export default {
         },
         {
           type: "checkbox",
-          id: "fruit",
-          label: "Fruit",
+          id: "checkbox",
+          label: "checkbox",
           choices: ["Apple", "Banana"]
+        },
+        {
+          type: "numeric",
+          id: "numeric",
+          label: "numeric"
         },
         {
           type: "radio",
@@ -53,41 +76,58 @@ export default {
           label: "cascade-select",
           subRules: [
             {
-              type: "checkbox",
-              id: "fruit",
-              label: "Fruit",
-              choices: ["Apple", "Banana"]
+              type: "text",
+              id: "text",
+              label: "text"
+            },
+            {
+              type: "date",
+              id: "date",
+              label: "date",
+              operators: [
+                { label: "等於", value: "EQUALS" },
+                { label: "早於", value: "GREATTHAN" },
+                { label: "晚於", value: "LESSTHAN" },
+                { label: "早於等於", value: "GREATTHANEQUALS" },
+                { label: "晚於等於", value: "LESSTHANEQUALS" },
+                { label: "不等於", value: "NOTEQUALS" }
+              ]
             },
             {
               type: "datetime",
               id: "vegetable",
-              label: "Vegetable"
+              label: "Vegetable",
+              operators: [
+                { label: "等於", value: "EQUALS" },
+                { label: "早於", value: "GREATTHAN" },
+                { label: "晚於", value: "LESSTHAN" },
+                { label: "早於等於", value: "GREATTHANEQUALS" },
+                { label: "晚於等於", value: "LESSTHANEQUALS" },
+                { label: "不等於", value: "NOTEQUALS" }
+              ]
+            },
+            {
+              type: "checkbox",
+              id: "checkbox",
+              label: "checkbox",
+              choices: ["Apple", "Banana"]
+            },
+            {
+              type: "numeric",
+              id: "numeric",
+              label: "numeric"
+            },
+            {
+              type: "radio",
+              id: "radio",
+              label: "radio",
+              choices: ["Apple", "Banana"]
             }
           ]
         }
       ],
 
-      query: {
-        logicalOperator: "AND",
-        children: [
-          {
-            type: "query-builder-rule",
-            query: {
-              rule: "radio",
-              selectedOperator: "EQUALS",
-              value: "Apple"
-            }
-          },
-          {
-            type: "query-builder-rule",
-            query: {
-              rule: "fruit",
-              selectedOperator: "NOTIN",
-              value: ["Apple", "Banana"]
-            }
-          }
-        ]
-      }
+      query: {}
     };
   }
 };
