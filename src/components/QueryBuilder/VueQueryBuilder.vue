@@ -228,12 +228,6 @@ export default {
   display: block;
 }
 
-.query-builder .rule-value-container input[type="number"],
-.query-builder .rule-value-container input[type="text"],
-.query-builder .rule-value-container select {
-  padding: 1px;
-}
-
 .query-builder .error-container {
   display: none;
   cursor: help;

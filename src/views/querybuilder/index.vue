@@ -59,7 +59,19 @@ export default {
         }
       ],
 
-      query: {}
+      query: {
+        logicalOperator: "AND",
+        children: [
+          {
+            type: "query-builder-rule",
+            query: {
+              rule: "vegetable",
+              selectedOperator: "=",
+              value: new Date(1473737544 * 1000)
+            }
+          }
+        ]
+      }
     };
   }
 };

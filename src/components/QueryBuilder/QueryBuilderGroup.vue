@@ -47,15 +47,7 @@ export default {
     QueryBuilderRule
   },
 
-  props: [
-    "ruleTypes",
-    "type",
-    "query",
-    "rules",
-    "index",
-    "maxDepth",
-    "depth"
-  ],
+  props: ["ruleTypes", "type", "query", "rules", "index", "maxDepth", "depth"],
 
   methods: {
     addRule() {
@@ -103,15 +95,16 @@ export default {
       const updated_query = deepClone(this.query);
       updated_query.children.splice(index, 1);
       this.$emit("update:query", updated_query);
-    },
-
-    hasMultipleRule() {
-      return this.query.children.length > 1;
     }
   },
 
   data() {
     return {};
+  },
+  computed: {
+    hasMultipleRule() {
+      return this.query.children.length > 1;
+    }
   }
 };
 </script>

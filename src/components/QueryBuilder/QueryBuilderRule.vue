@@ -118,8 +118,8 @@ export default {
       if (this.selectedRuleObj.type === "select") {
         updated_query.value = this.selectedRuleObj.choices[0].value;
       }
-      if (this.selectedRuleObj.type === "custom-component") {
-        updated_query.value = this.selectedRuleObj.default || null;
+      if (this.selectedRuleObj.type === "time" || this.selectedRuleObj.type === "date" || this.selectedRuleObj.type === "datetime") {
+        updated_query.value = new Date();
       }
 
       this.$emit("update:query", updated_query);
