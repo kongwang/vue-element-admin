@@ -117,17 +117,6 @@ export default {
           choices: [],
           inputType: "select",
           id: "select-field"
-        },
-        "multi-select": {
-          operators: [
-            { label: "等於", value: "EQUALS" },
-            { label: "不等於", value: "NOTEQUALS" },
-            { label: "包含於", value: "IN" },
-            { label: "不包含於", value: "NOTIN" }
-          ],
-          choices: [],
-          inputType: "select",
-          id: "multi-select-field"
         }
       }
     };

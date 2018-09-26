@@ -56,8 +56,19 @@ export default {
         type: "query-builder-rule",
         query: {
           rule: this.rules[0].id,
-          selectedOperator: this.rules[0].operators[0].value,
-          value: null
+          subRule:
+            this.rules[0].subRules === undefined
+              ? null
+              : this.rules[0].subRules[0].id,
+          selectedOperator:
+            this.rules[0].subRules === undefined
+              ? this.rules[0].operators[0].value
+              : this.rules[0].subRules[0].operators[0].value,
+          value: null,
+          subRuleLabel:
+            this.rules[0].subRules === undefined
+              ? null
+              : this.rules[0].subRules[0].label
         }
       };
       updated_query.children.push(child);
@@ -76,8 +87,19 @@ export default {
                 type: "query-builder-rule",
                 query: {
                   rule: this.rules[0].id,
-                  selectedOperator: this.rules[0].operators[0].value,
-                  value: null
+                  subRule:
+                    this.rules[0].subRules === undefined
+                      ? null
+                      : this.rules[0].subRules[0].id,
+                  selectedOperator:
+                    this.rules[0].subRules === undefined
+                      ? this.rules[0].operators[0].value
+                      : this.rules[0].subRules[0].operators[0].value,
+                  value: null,
+                  subRuleLabel:
+                    this.rules[0].subRules === undefined
+                      ? null
+                      : this.rules[0].subRules[0].label
                 }
               }
             ]

@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <vue-query-builder
+    <vue-query-builder-plus
       :rules="rules"
       v-model="query">
-    </vue-query-builder>
+    </vue-query-builder-plus>
 
     <p>Generated output:</p>
 
@@ -12,65 +12,17 @@
 </template>
 
 <script>
-import VueQueryBuilder from "@/components/QueryBuilder/VueQueryBuilder.vue";
+import VueQueryBuilderPlus from "@/components/QueryBuilder/VueQueryBuilder.vue";
 
 export default {
   name: "App",
   components: {
-    VueQueryBuilder
+    VueQueryBuilderPlus
   },
 
   data() {
     return {
       rules: [
-        {
-          type: "text",
-          id: "text",
-          label: "text"
-        },
-        {
-          type: "date",
-          id: "date",
-          label: "date",
-          operators: [
-            { label: "等於", value: "EQUALS" },
-            { label: "早於", value: "GREATTHAN" },
-            { label: "晚於", value: "LESSTHAN" },
-            { label: "早於等於", value: "GREATTHANEQUALS" },
-            { label: "晚於等於", value: "LESSTHANEQUALS" },
-            { label: "不等於", value: "NOTEQUALS" }
-          ]
-        },
-        {
-          type: "datetime",
-          id: "vegetable",
-          label: "Vegetable",
-          operators: [
-            { label: "等於", value: "EQUALS" },
-            { label: "早於", value: "GREATTHAN" },
-            { label: "晚於", value: "LESSTHAN" },
-            { label: "早於等於", value: "GREATTHANEQUALS" },
-            { label: "晚於等於", value: "LESSTHANEQUALS" },
-            { label: "不等於", value: "NOTEQUALS" }
-          ]
-        },
-        {
-          type: "checkbox",
-          id: "checkbox",
-          label: "checkbox",
-          choices: ["Apple", "Banana"]
-        },
-        {
-          type: "numeric",
-          id: "numeric",
-          label: "numeric"
-        },
-        {
-          type: "radio",
-          id: "radio",
-          label: "radio",
-          choices: ["Apple", "Banana"]
-        },
         {
           id: "subSelect",
           label: "cascade-select",
@@ -95,8 +47,8 @@ export default {
             },
             {
               type: "datetime",
-              id: "vegetable",
-              label: "Vegetable",
+              id: "datetime",
+              label: "datetime",
               operators: [
                 { label: "等於", value: "EQUALS" },
                 { label: "早於", value: "GREATTHAN" },
@@ -124,6 +76,54 @@ export default {
               choices: ["Apple", "Banana"]
             }
           ]
+        },
+        {
+          type: "text",
+          id: "text",
+          label: "text"
+        },
+        {
+          type: "date",
+          id: "date",
+          label: "date",
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "早於", value: "GREATTHAN" },
+            { label: "晚於", value: "LESSTHAN" },
+            { label: "早於等於", value: "GREATTHANEQUALS" },
+            { label: "晚於等於", value: "LESSTHANEQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ]
+        },
+        {
+          type: "datetime",
+          id: "datetime",
+          label: "datetime",
+          operators: [
+            { label: "等於", value: "EQUALS" },
+            { label: "早於", value: "GREATTHAN" },
+            { label: "晚於", value: "LESSTHAN" },
+            { label: "早於等於", value: "GREATTHANEQUALS" },
+            { label: "晚於等於", value: "LESSTHANEQUALS" },
+            { label: "不等於", value: "NOTEQUALS" }
+          ]
+        },
+        {
+          type: "checkbox",
+          id: "checkbox",
+          label: "checkbox",
+          choices: ["Apple", "Banana"]
+        },
+        {
+          type: "numeric",
+          id: "numeric",
+          label: "numeric"
+        },
+        {
+          type: "radio",
+          id: "radio",
+          label: "radio",
+          choices: ["Apple", "Banana"]
         }
       ],
 

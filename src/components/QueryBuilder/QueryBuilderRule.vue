@@ -22,7 +22,7 @@
             </el-select>
         </div>
         <div class="rule-value-container">
-          <el-input v-if="selectedRuleObj.inputType === 'text'" type="text" v-model="query.value" clearable/>
+          <el-input v-if="selectedRuleObj.inputType === 'text'" type="text" v-model="query.value" maxlength="1000" clearable/>
           <el-input-number v-if="selectedRuleObj.inputType === 'number'" v-model="query.value"></el-input-number>
           <el-date-picker v-if="selectedRuleObj.inputType === 'date' || selectedRuleObj.inputType === 'datetime'" value-format="timestamp" :editable="false" :type="selectedRuleObj.inputType" v-model="query.value" />
           <el-checkbox-group v-model="query.value" v-if="selectedRuleObj.inputType === 'checkbox'">
@@ -57,14 +57,16 @@ export default {
     };
   },
   methods: {
-    remove: function() {
+    remove() {
       this.$emit("child-deletion-requested", this.index);
     },
-    ruleChange: function() {
+    ruleChange() {
       const _this = this;
       this.query.value = null;
       this.subRules = [];
+      this.query.subRule = null;
       this.selectedSubRule = null;
+      _this.query.subRuleLabel = null;
       this.rules.forEach(function(value) {
         if (value.id === _this.selectedRule) {
           if (
@@ -73,6 +75,8 @@ export default {
             value.subRules.length > 0
           ) {
             _this.subRules = value.subRules;
+            _this.selectedSubRule = _this.subRules[0].id;
+            _this.query.subRule = _this.selectedSubRule;
           } else {
             _this.selectedRuleObj = value;
             _this.query.rule = _this.selectedRule;
@@ -82,7 +86,7 @@ export default {
       });
       this.query.selectedOperator = this.selectedRuleObj.operators[0].value;
     },
-    subRuleChange: function() {
+    subRuleChange() {
       const _this = this;
       this.query.value = null;
       this.subRules.forEach(function(value) {
@@ -90,7 +94,9 @@ export default {
           _this.selectedRuleObj = value;
           _this.query.selectedOperator =
             _this.selectedRuleObj.operators[0].value;
-          _this.query.rule = _this.selectedRule + "-" + _this.selectedSubRule;
+          _this.query.rule = _this.selectedRule;
+          _this.query.subRule = _this.selectedSubRule;
+          _this.query.subRuleLabel = _this.selectedRuleObj.label;
           _this.initValue();
         }
       });
@@ -120,15 +126,10 @@ export default {
   },
 
   mounted() {
-    // Set a default value for these types if one isn't provided already
-    this.initValue();
-
     var _this = this;
-    var selectedRuleCopy = _this.selectedRule;
-    var splitIndex = selectedRuleCopy.indexOf("-");
-    if (splitIndex > -1) {
-      _this.selectedRule = selectedRuleCopy.substring(0, splitIndex);
-      _this.selectedSubRule = selectedRuleCopy.substring(splitIndex + 1);
+    if (_this.query.subRule !== null) {
+      _this.selectedRule = _this.query.rule;
+      _this.selectedSubRule = _this.query.subRule;
       this.rules.forEach(function(rule) {
         if (rule.id === _this.selectedRule) {
           var isBreak = false;
@@ -153,6 +154,8 @@ export default {
         }
       });
     }
+    // Set a default value for these types if one isn't provided already
+    this.initValue();
   }
 };
 </script>
